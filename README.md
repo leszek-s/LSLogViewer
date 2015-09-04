@@ -1,7 +1,7 @@
 # LSLogViewer
 **LSLogViewer** is a simple in-app log viewer. It allows reading logs saved by NSLog on iOS device.
 <p align="center" >
-<img src="https://raw.github.com/fins/LSLogViewerSample/master/LSLogViewerSample/lslogviewer.gif" alt="LSLogViewer" width="320" height="568" />
+<img src="https://raw.github.com/fins/LSLogViewer/master/LSLogViewerSample/lslogviewer.gif" alt="LSLogViewer" width="320" height="568" />
 </p>
 ## Usage
 To present the LSLogViewer screen simply call it anywhere from your code like below.
