@@ -11,6 +11,35 @@
 #import <MessageUI/MessageUI.h>
 #import "asl.h"
 
+void LSLogf(NSString *format, ...)
+{
+    va_list args;
+    va_start(args, format);
+    NSString *line = [[NSString alloc] initWithFormat:format arguments:args];
+    va_end(args);
+    
+    static NSDateFormatter *formatter = nil;
+    if (!formatter)
+    {
+        formatter = [NSDateFormatter new];
+        formatter.dateFormat = @"yyyy-MM-dd";
+    }
+    NSString *documentsPath = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES).firstObject;
+    NSString *dateString = [formatter stringFromDate:[NSDate new]];
+    NSString *log = [NSString stringWithFormat:@"%@ %@\n", [NSDate new], line];
+    NSString *path = [NSString stringWithFormat:@"%@/log-%@.txt", documentsPath, dateString];
+    
+    if (![[NSFileManager defaultManager] fileExistsAtPath:path])
+    {
+        [[NSData new] writeToFile:path atomically:YES];
+        [[NSURL fileURLWithPath:path] setResourceValue:@YES forKey:NSURLIsExcludedFromBackupKey error:nil];
+    }
+    NSFileHandle *fileHandle = [NSFileHandle fileHandleForWritingAtPath:path];
+    [fileHandle seekToEndOfFile];
+    [fileHandle writeData:[log dataUsingEncoding:NSUTF8StringEncoding]];
+    [fileHandle closeFile];
+}
+
 @interface LSLogViewer () <MFMailComposeViewControllerDelegate>
 @property (strong, nonatomic) IBOutlet UITextView *textView;
 @property (strong, nonatomic) IBOutlet UIBarButtonItem *reloadButton;
@@ -242,33 +271,17 @@
 
 - (NSString *)readDeviceLogs
 {
-    aslmsg q, m;
-    int i;
-    const char *key, *val;
-    NSMutableString *logs = [NSMutableString stringWithString:@""];
-    
-    q = asl_new(ASL_TYPE_QUERY);
-    
-    aslresponse r = asl_search(NULL, q);
-    while (NULL != (m = asl_next(r)))
+    static NSDateFormatter *formatter = nil;
+    if (!formatter)
     {
-        NSMutableDictionary *tmpDict = [NSMutableDictionary dictionary];
-        
-        for (i = 0; (NULL != (key = asl_key(m, i))); i++)
-        {
-            NSString *keyString = [NSString stringWithUTF8String:(char *)key];
-            
-            val = asl_get(m, key);
-            
-            NSString *string = val != NULL ? [NSString stringWithUTF8String:val] : nil;
-            [tmpDict setValue:string forKey:keyString];
-        }
-        
-        NSString *line = [NSString stringWithFormat:@"%@ %@[%@] %@\n", [NSDate dateWithTimeIntervalSince1970:[tmpDict[@"Time"] intValue]], tmpDict[@"Sender"], tmpDict[@"PID"], tmpDict[@"Message"]];
-        
-        [logs appendString:line];
+        formatter = [NSDateFormatter new];
+        formatter.dateFormat = @"yyyy-MM-dd";
     }
-    asl_release(r);
+    NSString *documentsPath = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES).firstObject;
+    NSString *dateString = [formatter stringFromDate:[NSDate new]];
+    NSString *path = [NSString stringWithFormat:@"%@/log-%@.txt", documentsPath, dateString];
+    
+    NSString *logs = [NSString stringWithContentsOfFile:path encoding:NSUTF8StringEncoding error:nil];
     
     return logs;
 }

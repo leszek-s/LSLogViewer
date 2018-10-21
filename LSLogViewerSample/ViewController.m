@@ -19,13 +19,13 @@
 {
     [super viewDidLoad];
     
-    NSLog(@"This is a log from sample application!");
-    NSLog(@"Have a nice day!");
+    LSLog(@"This is a log from sample application!");
+    LSLog(@"Have a nice day!");
 }
 
 - (IBAction)showLogsAction:(id)sender
 {
-    NSLog(@"Show logs!");
+    LSLog(@"Show logs!");
     
     [LSLogViewer showViewer];
 }
