@@ -17,7 +17,11 @@ void LSLogf(NSString *format, ...)
     va_start(args, format);
     NSString *line = [[NSString alloc] initWithFormat:format arguments:args];
     va_end(args);
-    
+    LSLogl(line);
+}
+
+void LSLogl(NSString *line)
+{
     static NSDateFormatter *formatter = nil;
     if (!formatter)
     {
@@ -44,7 +48,6 @@ void LSLogf(NSString *format, ...)
 @property (strong, nonatomic) IBOutlet UITextView *textView;
 @property (strong, nonatomic) IBOutlet UIBarButtonItem *reloadButton;
 @property (strong, nonatomic) IBOutlet UITextField *searchField;
-@property (strong, nonatomic) UIWindow *window;
 @property (assign, nonatomic) BOOL loadingLogs;
 @end
 
@@ -54,12 +57,12 @@ void LSLogf(NSString *format, ...)
 
 + (void)showViewer
 {
-    [[self sharedInstance] showInOwnWindow];
+    [[self sharedInstance] showInMainWindow];
 }
 
 + (void)hideViewer
 {
-    [[self sharedInstance] hideOwnWindow];
+    [[self sharedInstance] hideMainWindow];
 }
 
 + (void)registerThreeFingerTripleTapGesture
@@ -82,27 +85,25 @@ void LSLogf(NSString *format, ...)
     
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        sharedInstance = [[self alloc] init];
+        sharedInstance = [[LSLogViewer alloc] initWithNibName:@"LSLogViewer" bundle:[NSBundle bundleForClass:[self class]]];
     });
     
     return sharedInstance;
 }
 
-- (void)showInOwnWindow
+- (void)showInMainWindow
 {
-    if (!self.window)
-    {
-        self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
-        self.window.windowLevel = UIWindowLevelAlert;
-        self.window.rootViewController = self;
-    }
-    [self.window makeKeyAndVisible];
+    UIWindow *mainWindow = [UIApplication sharedApplication].keyWindow;
+    if (!mainWindow)
+        mainWindow = [[[UIApplication sharedApplication] delegate] window];
+    self.modalPresentationStyle = UIModalPresentationOverFullScreen;
+    [[mainWindow rootViewController] presentViewController:self animated:NO completion:nil];
     [self refreshLogs];
 }
 
-- (void)hideOwnWindow
+- (void)hideMainWindow
 {
-    self.window.hidden = YES;
+    [self dismissViewControllerAnimated:NO completion:nil];
 }
 
 #pragma mark - view controller
@@ -215,7 +216,7 @@ void LSLogf(NSString *format, ...)
 
 - (IBAction)closeAction:(id)sender
 {
-    [self hideOwnWindow];
+    [self hideMainWindow];
 }
 
 - (IBAction)searchEditingDidBegin:(id)sender

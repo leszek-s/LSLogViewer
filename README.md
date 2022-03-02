@@ -8,7 +8,7 @@ In version 1.x the purpose of this library was to read logs saved by NSLog on th
 </p>
 
 ## Usage
-To log something use LSLog instead of NSLog like below. This will save your logs to files in documents directory of the application.
+To log something use LSLog instead of NSLog like below (or LSLogl if you use this library from Swift code). This will save your logs to files in documents directory of the application.
 
 ```objc
 LSLog(@"Hello!");

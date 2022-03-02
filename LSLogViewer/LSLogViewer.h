@@ -11,6 +11,7 @@
 #define LSLog(fmt, ...) LSLogf((@"%s [Line %d] " fmt), __PRETTY_FUNCTION__, __LINE__, ##__VA_ARGS__);
 
 void LSLogf(NSString *format, ...);
+void LSLogl(NSString *line);
 
 @interface LSLogViewer : UIViewController
 
