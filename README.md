@@ -25,6 +25,7 @@ With a single line of code you can also register a three-finger triple-tap gestu
 ```objc
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+    // setting UIWindow
     // ...
     [LSLogViewer registerThreeFingerTripleTapGesture];
     return YES;

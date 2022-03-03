@@ -71,9 +71,7 @@ void LSLogl(NSString *line)
     [recognizer setNumberOfTouchesRequired:3];
     [recognizer setNumberOfTapsRequired:3];
     
-    UIWindow *mainWindow = [UIApplication sharedApplication].keyWindow;
-    if (!mainWindow)
-        mainWindow = [[[UIApplication sharedApplication] delegate] window];
+    UIWindow *mainWindow = [self findMainWindow];
     [mainWindow addGestureRecognizer:recognizer];
 }
 
@@ -91,11 +89,24 @@ void LSLogl(NSString *line)
     return sharedInstance;
 }
 
++ (UIWindow *)findMainWindow
+{
+    UIWindow *mainWindow = nil;
+    if ([UIApplication.sharedApplication respondsToSelector:@selector(keyWindow)])
+        mainWindow = [UIApplication.sharedApplication keyWindow];
+    if (!mainWindow && [UIApplication.sharedApplication.delegate respondsToSelector:@selector(window)])
+        mainWindow = [UIApplication.sharedApplication.delegate window];
+    if (!mainWindow && [UIApplication.sharedApplication respondsToSelector:@selector(windows)])
+        mainWindow = [UIApplication.sharedApplication windows].firstObject;
+    return mainWindow;
+}
+
 - (void)showInMainWindow
 {
-    UIWindow *mainWindow = [UIApplication sharedApplication].keyWindow;
-    if (!mainWindow)
-        mainWindow = [[[UIApplication sharedApplication] delegate] window];
+    if (self.presentingViewController)
+        return;
+    
+    UIWindow *mainWindow = [LSLogViewer findMainWindow];
     self.modalPresentationStyle = UIModalPresentationOverFullScreen;
     [[mainWindow rootViewController] presentViewController:self animated:NO completion:nil];
     [self refreshLogs];
