@@ -15,6 +15,8 @@ void LSLogl(NSString *line);
 
 @interface LSLogViewer : UIViewController
 
++ (instancetype)sharedInstance;
+
 + (void)showViewer;
 
 + (void)hideViewer;

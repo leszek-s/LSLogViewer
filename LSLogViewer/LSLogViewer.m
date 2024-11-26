@@ -9,7 +9,6 @@
 #import "LSLogViewer.h"
 
 #import <MessageUI/MessageUI.h>
-#import "asl.h"
 
 void LSLogf(NSString *format, ...)
 {
@@ -83,7 +82,7 @@ void LSLogl(NSString *line)
     
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        sharedInstance = [[LSLogViewer alloc] initWithNibName:@"LSLogViewer" bundle:[NSBundle bundleForClass:[self class]]];
+        sharedInstance = [[LSLogViewer alloc] init];
     });
     
     return sharedInstance;
@@ -122,6 +121,87 @@ void LSLogl(NSString *line)
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
+    self.view.backgroundColor = [UIColor blackColor];
+    self.view.alpha = 0.85;
+    
+    UITextField *searchField = [[UITextField alloc] init];
+    searchField.textColor = [UIColor greenColor];
+    searchField.tintColor = [UIColor greenColor];
+    searchField.translatesAutoresizingMaskIntoConstraints = NO;
+    searchField.returnKeyType = UIReturnKeySearch;
+    [searchField addTarget:self action:@selector(searchAction:) forControlEvents:UIControlEventEditingDidEndOnExit];
+    [searchField addTarget:self action:@selector(searchEditingDidBegin:) forControlEvents:UIControlEventEditingDidBegin];
+    [searchField addTarget:self action:@selector(searchEditingDidEnd:) forControlEvents:UIControlEventEditingDidEnd];
+    self.searchField = searchField;
+    
+    UIToolbar *topToolbar = [[UIToolbar alloc] init];
+    topToolbar.translucent = NO;
+    topToolbar.translatesAutoresizingMaskIntoConstraints = NO;
+    topToolbar.backgroundColor = [UIColor blackColor];
+    topToolbar.barTintColor = [UIColor blackColor];
+    
+    UIBarButtonItem *ti1 = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemSearch target:self action:@selector(searchAction:)];
+    ti1.tintColor = [UIColor greenColor];
+    UIBarButtonItem *ti2 = [[UIBarButtonItem alloc] initWithCustomView:self.searchField];
+    UIBarButtonItem *ti3 = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
+    UIBarButtonItem *ti4 = [[UIBarButtonItem alloc] initWithTitle:@" ◄ " style:UIBarButtonItemStylePlain target:self action:@selector(searchBackwardAction:)];
+    ti4.tintColor = [UIColor greenColor];
+    UIBarButtonItem *ti5 = [[UIBarButtonItem alloc] initWithTitle:@" ► " style:UIBarButtonItemStylePlain target:self action:@selector(searchAction:)];
+    ti5.tintColor = [UIColor greenColor];
+    
+    [topToolbar setItems:@[ti1, ti2, ti3, ti4, ti5]];
+    
+    UIView *topLine = [UIView new];
+    topLine.translatesAutoresizingMaskIntoConstraints = NO;
+    topLine.backgroundColor = [UIColor greenColor];
+    
+    UITextView *textView = [[UITextView alloc] init];
+    textView.clipsToBounds = YES;
+    textView.editable = NO;
+    textView.translatesAutoresizingMaskIntoConstraints = NO;
+    textView.backgroundColor = [UIColor clearColor];
+    textView.textColor = [UIColor greenColor];
+    textView.tintColor = [UIColor greenColor];
+    textView.font = [UIFont fontWithName:@"Courier" size:12];
+    self.textView = textView;
+    
+    UIView *bottomLine = [UIView new];
+    bottomLine.translatesAutoresizingMaskIntoConstraints = NO;
+    bottomLine.backgroundColor = [UIColor greenColor];
+    
+    UIToolbar *bottomToolbar = [[UIToolbar alloc] init];
+    bottomToolbar.translucent = NO;
+    bottomToolbar.translatesAutoresizingMaskIntoConstraints = NO;
+    bottomToolbar.backgroundColor = [UIColor blackColor];
+    bottomToolbar.barTintColor = [UIColor blackColor];
+
+    UIBarButtonItem *bi1 = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCompose target:self action:@selector(emailAction:)];
+    bi1.tintColor = [UIColor greenColor];
+    UIBarButtonItem *bi2 = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh target:self action:@selector(refreshAction:)];
+    bi2.tintColor = [UIColor greenColor];
+    UIBarButtonItem *bi3 = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
+    UIBarButtonItem *bi4 = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemStop target:self action:@selector(closeAction:)];
+    bi4.tintColor = [UIColor greenColor];
+    self.reloadButton = bi2;
+    
+    [bottomToolbar setItems:@[bi1, bi2, bi3, bi4]];
+    
+    UIStackView *stackView = [[UIStackView alloc] initWithArrangedSubviews:@[topToolbar, topLine, self.textView, bottomLine, bottomToolbar]];
+    stackView.axis = UILayoutConstraintAxisVertical;
+    stackView.translatesAutoresizingMaskIntoConstraints = NO;
+    stackView.backgroundColor = [UIColor clearColor];
+    
+    [self.view addSubview:stackView];
+    [NSLayoutConstraint activateConstraints:@[
+        [stackView.topAnchor constraintEqualToAnchor:self.view.safeAreaLayoutGuide.topAnchor],
+        [stackView.bottomAnchor constraintEqualToAnchor:self.view.safeAreaLayoutGuide.bottomAnchor],
+        [stackView.leadingAnchor constraintEqualToAnchor:self.view.safeAreaLayoutGuide.leadingAnchor],
+        [stackView.trailingAnchor constraintEqualToAnchor:self.view.safeAreaLayoutGuide.trailingAnchor],
+        [searchField.widthAnchor constraintGreaterThanOrEqualToConstant:150],
+        [topLine.heightAnchor constraintEqualToConstant:1],
+        [bottomLine.heightAnchor constraintEqualToConstant:1]
+    ]];
     
     self.textView.text = @"LOADING...";
     self.searchField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:@"SEARCH" attributes:@{ NSForegroundColorAttributeName: [UIColor greenColor] }];

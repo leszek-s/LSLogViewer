@@ -14,7 +14,6 @@
 		1BC5DB0F1B99D31800C089C6 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1BC5DB0E1B99D31800C089C6 /* Images.xcassets */; };
 		1BC5DB121B99D31800C089C6 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1BC5DB101B99D31800C089C6 /* LaunchScreen.xib */; };
 		1BC5DB2D1B99D44000C089C6 /* LSLogViewer.m in Sources */ = {isa = PBXBuildFile; fileRef = 1BC5DB2B1B99D44000C089C6 /* LSLogViewer.m */; };
-		1BC5DB2E1B99D44000C089C6 /* LSLogViewer.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1BC5DB2C1B99D44000C089C6 /* LSLogViewer.xib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -30,7 +29,6 @@
 		1BC5DB111B99D31800C089C6 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
 		1BC5DB2A1B99D44000C089C6 /* LSLogViewer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LSLogViewer.h; sourceTree = "<group>"; };
 		1BC5DB2B1B99D44000C089C6 /* LSLogViewer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LSLogViewer.m; sourceTree = "<group>"; };
-		1BC5DB2C1B99D44000C089C6 /* LSLogViewer.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = LSLogViewer.xib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -90,7 +88,6 @@
 			children = (
 				1BC5DB2A1B99D44000C089C6 /* LSLogViewer.h */,
 				1BC5DB2B1B99D44000C089C6 /* LSLogViewer.m */,
-				1BC5DB2C1B99D44000C089C6 /* LSLogViewer.xib */,
 			);
 			path = LSLogViewer;
 			sourceTree = "<group>";
@@ -134,6 +131,7 @@
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
+				English,
 				en,
 				Base,
 			);
@@ -155,7 +153,6 @@
 				1BC5DB0D1B99D31800C089C6 /* Main.storyboard in Resources */,
 				1BC5DB121B99D31800C089C6 /* LaunchScreen.xib in Resources */,
 				1BC5DB0F1B99D31800C089C6 /* Images.xcassets in Resources */,
-				1BC5DB2E1B99D44000C089C6 /* LSLogViewer.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -281,8 +278,9 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = LSLogViewerSample/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
@@ -292,8 +290,9 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = LSLogViewerSample/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
